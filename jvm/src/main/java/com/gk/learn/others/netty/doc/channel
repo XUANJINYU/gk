@@ -1,0 +1,11 @@
+FileChannel  用于对本地文件数据读写
+
+public int read(ByteBuffer var1) throws IOException 从通道读取数据放入到缓冲区中
+public int write(ByteBuffer var1) throws IOException) 把缓冲区的数据写入到通道中
+public long transferFrom(ReadableByteChannel src, long position, long count) 从目标通道中复制数据到当前通道
+public long transferTo(long var1, long var3, WritableByteChannel var5) throws IOException 从当前通道中复制数据到目标通道
+
+DatagramChannel 用于UDP数据的读写
+
+
+ServerSocketChannel SocketChannel 用于TCP数据的读写
