@@ -1,0 +1,7 @@
+1.创建一个ServerSocket
+2.绑定端口
+3.当有客户端请求时，通过accept方法拿到Socket，进而可以进行处理
+4.模拟Http报文头和Hello
+5.关闭Socket
+
+//  注意：socket关闭期间发送的请求，在socket重新启动后会请求进来

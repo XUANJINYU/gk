@@ -1,0 +1,14 @@
+
+//-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:gc.demo.log
+
+//-XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX;+UseSerialGC -Xloggc:gc.demo.log  串行gc
+
+
+CMS垃圾回收机制
+阶段1：Initial Mark 初始标记
+阶段2：Concurrent Mark 并发标记
+阶段3：Concurrent PreClean 并发预清理
+阶段4：Final Remark 最终标记
+阶段5：Concurrent Sweep 并发清理
+阶段6：Concurrent Reset 并发重置
+
