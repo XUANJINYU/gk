@@ -1,0 +1,20 @@
+oom:PermGen space / oom:Metaspace
+
+oom:PermGen space  主要原因：加载到内存的类过多或体积过大，超过了PermGen区的大小
+
+解决办法：增大PermGen/Metaspace
+-XX:MaxPermSize=512m
+-XX:MaxMetaspaceSize=512m
+
+高版本jvm也可以
+-XX:+CMCClassUnloadingEnabled
+
+oom:Unable to create new native thread  程序创建的线程数量已达到上限值的异常信息
+
+解决思路：
+1.调整系统参数： ulimit -a, echo 120000 > /pro/sys/hernel/thread-max
+2.降低xss等参数
+3.调整代码，改变线程创建和使用的方式
+
+
+
