@@ -1,34 +1,3 @@
-C:\Users\86176>curl http://localhost:8088/api/hello
-hello world
-C:\Users\86176>curl -I http://localhost:8088/api/hello
-HTTP/1.1 200
-Content-Type: text/plain;charset=UTF-8
-Content-Length: 11
-Date: Sat, 13 Nov 2021 06:49:52 GMT
-
--- 默认环境下的测试  -Xmx700m
-PS C:\WINDOWS\system32> sb -u http://localhost:8088/api/hello -c 20 -N 60
-Starting at 2021/11/13 15:21:22
-[Press C to stop the test]
-191986  (RPS: 2841)
----------------Finished!----------------
-Finished at 2021/11/13 15:22:30 (took 00:01:07.6965087)
-Status 200:    191986
-
-RPS: 3142.1 (requests/second)
-Max: 240ms
-Min: 0ms
-Avg: 0.4ms
-
-  50%   below 0ms
-  60%   below 0ms
-  70%   below 0ms
-  80%   below 0ms
-  90%   below 0ms
-  95%   below 2ms
-  98%   below 5ms
-  99%   below 8ms
-99.9%   below 25ms
 
 -- 512m堆内存下启动
 C:\Users\86176\Desktop>java -jar -Xmx512m -Xms512m gateway-server-0.0.1-SNAPSHOT.jar
@@ -106,380 +75,123 @@ Avg: 0.3ms
   99%   below 7ms
 99.9%   below 17ms
 
-
-
-
-
-C:\Users\86176>jps -l
-14224 org.jetbrains.idea.maven.server.RemoteMavenServer
-1476 sun.tools.jps.Jps
-14996
-504 gateway-server-0.0.1-SNAPSHOT.jar
-15532 org.jetbrains.jps.cmdline.Launcher
-
-C:\Users\86176>jstack -l 504
-2021-11-13 16:30:59
-Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.241-b07 mixed mode):
-
-"DestroyJavaVM" #34 prio=5 os_prio=0 tid=0x000000001b6d1800 nid=0x2a5c waiting on condition [0x0000000000000000]
-   java.lang.Thread.State: RUNNABLE
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-AsyncTimeout" #32 daemon prio=5 os_prio=0 tid=0x000000001b6cd000 nid=0x344 waiting on condition [0x000000002109f000]
-   java.lang.Thread.State: TIMED_WAITING (sleeping)
-        at java.lang.Thread.sleep(Native Method)
-        at org.apache.coyote.AbstractProtocol$AsyncTimeout.run(AbstractProtocol.java:1143)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-Acceptor-0" #31 daemon prio=5 os_prio=0 tid=0x000000001c12b000 nid=0x16f4 runnable [0x0000000020f9f000]
-   java.lang.Thread.State: RUNNABLE
-        at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
-        at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:422)
-        at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:250)
-        - locked <0x00000000e0824c78> (a java.lang.Object)
-        at org.apache.tomcat.util.net.NioEndpoint$Acceptor.run(NioEndpoint.java:455)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-ClientPoller-1" #30 daemon prio=5 os_prio=0 tid=0x000000001c12a800 nid=0x24b8 runnable [0x0000000020e9e000]
-   java.lang.Thread.State: RUNNABLE
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
-        at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
-        at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
-        - locked <0x00000000e08254c8> (a sun.nio.ch.Util$3)
-        - locked <0x00000000e08254b8> (a java.util.Collections$UnmodifiableSet)
-        - locked <0x00000000e0825358> (a sun.nio.ch.WindowsSelectorImpl)
-        at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
-        at org.apache.tomcat.util.net.NioEndpoint$Poller.run(NioEndpoint.java:798)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-ClientPoller-0" #29 daemon prio=5 os_prio=0 tid=0x000000001c129800 nid=0x8bc runnable [0x0000000020d9e000]
-   java.lang.Thread.State: RUNNABLE
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
-        at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
-        at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
-        - locked <0x00000000e0828ee0> (a sun.nio.ch.Util$3)
-        - locked <0x00000000e0828ed0> (a java.util.Collections$UnmodifiableSet)
-        - locked <0x00000000e0828d70> (a sun.nio.ch.WindowsSelectorImpl)
-        at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
-        at org.apache.tomcat.util.net.NioEndpoint$Poller.run(NioEndpoint.java:798)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-10" #28 daemon prio=5 os_prio=0 tid=0x000000001c129000 nid=0x2adc waiting on condition [0x0000000020c9e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-9" #27 daemon prio=5 os_prio=0 tid=0x000000001c12c000 nid=0x36d8 waiting on condition [0x0000000020b9e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-8" #26 daemon prio=5 os_prio=0 tid=0x000000001c127800 nid=0x3164 waiting on condition [0x0000000020a9e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-7" #25 daemon prio=5 os_prio=0 tid=0x000000001c12d800 nid=0x1064 waiting on condition [0x000000002099e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-6" #24 daemon prio=5 os_prio=0 tid=0x000000001c12e000 nid=0x40c4 waiting on condition [0x000000002089e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-5" #23 daemon prio=5 os_prio=0 tid=0x000000001c128000 nid=0x3d9c waiting on condition [0x000000002079e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-4" #22 daemon prio=5 os_prio=0 tid=0x000000001a01b800 nid=0x29c8 waiting on condition [0x000000002059e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-3" #21 daemon prio=5 os_prio=0 tid=0x000000001859d800 nid=0x3094 waiting on condition [0x000000002049f000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-2" #20 daemon prio=5 os_prio=0 tid=0x0000000017945800 nid=0x4370 waiting on condition [0x000000002039e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"http-nio-8088-exec-1" #19 daemon prio=5 os_prio=0 tid=0x00000000194b6800 nid=0x292c waiting on condition [0x000000002029e000]
-   java.lang.Thread.State: WAITING (parking)
-        at sun.misc.Unsafe.park(Native Method)
-        - parking to wait for  <0x00000000e08004e0> (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
-        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
-        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
-        at java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:442)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:103)
-        at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:31)
-        at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
-        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
-        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-        at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"NioBlockingSelector.BlockPoller-1" #18 daemon prio=5 os_prio=0 tid=0x000000001b65f800 nid=0x4050 runnable [0x000000002019f000]
-   java.lang.Thread.State: RUNNABLE
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
-        at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
-        at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
-        at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
-        - locked <0x00000000e0802b80> (a sun.nio.ch.Util$3)
-        - locked <0x00000000e0802b70> (a java.util.Collections$UnmodifiableSet)
-        - locked <0x00000000e0802a00> (a sun.nio.ch.WindowsSelectorImpl)
-        at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
-        at org.apache.tomcat.util.net.NioBlockingSelector$BlockPoller.run(NioBlockingSelector.java:298)
-
-   Locked ownable synchronizers:
-        - None
-
-"container-0" #17 prio=5 os_prio=0 tid=0x000000001907d800 nid=0x3294 waiting on condition [0x000000001fa8f000]
-   java.lang.Thread.State: TIMED_WAITING (sleeping)
-        at java.lang.Thread.sleep(Native Method)
-        at org.apache.catalina.core.StandardServer.await(StandardServer.java:427)
-        at org.springframework.boot.web.embedded.tomcat.TomcatWebServer$1.run(TomcatWebServer.java:182)
-
-   Locked ownable synchronizers:
-        - None
-
-"ContainerBackgroundProcessor[StandardEngine[Tomcat]]" #16 daemon prio=5 os_prio=0 tid=0x000000001b21c800 nid=0x3934 waiting on condition [0x000000001f98f000]
-   java.lang.Thread.State: TIMED_WAITING (sleeping)
-        at java.lang.Thread.sleep(Native Method)
-        at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1357)
-        at java.lang.Thread.run(Thread.java:748)
-
-   Locked ownable synchronizers:
-        - None
-
-"Service Thread" #10 daemon prio=9 os_prio=0 tid=0x0000000016b7b000 nid=0x2358 runnable [0x0000000000000000]
-   java.lang.Thread.State: RUNNABLE
-
-   Locked ownable synchronizers:
-        - None
-
-"C1 CompilerThread3" #9 daemon prio=9 os_prio=2 tid=0x0000000016b42800 nid=0x36f8 waiting on condition [0x0000000000000000]
-   java.lang.Thread.State: RUNNABLE
-
-   Locked ownable synchronizers:
-        - None
-
-"C2 CompilerThread2" #8 daemon prio=9 os_prio=2 tid=0x0000000016b32800 nid=0x35c4 waiting on condition [0x0000000000000000]
-   java.lang.Thread.State: RUNNABLE
-
-   Locked ownable synchronizers:
-        - None
-
-"C2 CompilerThread1" #7 daemon prio=9 os_prio=2 tid=0x0000000016b30000 nid=0x2340 waiting on condition [0x0000000000000000]
-   java.lang.Thread.State: RUNNABLE
-
-   Locked ownable synchronizers:
-        - None
-
-"C2 CompilerThread0" #6 daemon prio=9 os_prio=2 tid=0x0000000016b2c800 nid=0x1b18 waiting on condition [0x0000000000000000]
-   java.lang.Thread.State: RUNNABLE
-
-   Locked ownable synchronizers:
-        - None
-
-"Attach Listener" #5 daemon prio=5 os_prio=2 tid=0x0000000016ad9800 nid=0x2d00 waiting on condition [0x0000000000000000]
-   java.lang.Thread.State: RUNNABLE
-
-   Locked ownable synchronizers:
-        - None
-
-"Signal Dispatcher" #4 daemon prio=9 os_prio=2 tid=0x0000000016ad8000 nid=0x238c runnable [0x0000000000000000]
-   java.lang.Thread.State: RUNNABLE
-
-   Locked ownable synchronizers:
-        - None
-
-"Finalizer" #3 daemon prio=8 os_prio=1 tid=0x0000000016ac1000 nid=0x4b30 in Object.wait() [0x000000001709f000]
-   java.lang.Thread.State: WAITING (on object monitor)
-        at java.lang.Object.wait(Native Method)
-        - waiting on <0x00000000e002cc00> (a java.lang.ref.ReferenceQueue$Lock)
-        at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
-        - locked <0x00000000e002cc00> (a java.lang.ref.ReferenceQueue$Lock)
-        at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
-        at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:216)
-
-   Locked ownable synchronizers:
-        - None
-
-"Reference Handler" #2 daemon prio=10 os_prio=2 tid=0x0000000016ac0800 nid=0x2b28 in Object.wait() [0x0000000016f9f000]
-   java.lang.Thread.State: WAITING (on object monitor)
-        at java.lang.Object.wait(Native Method)
-        - waiting on <0x00000000e0025590> (a java.lang.ref.Reference$Lock)
-        at java.lang.Object.wait(Object.java:502)
-        at java.lang.ref.Reference.tryHandlePending(Reference.java:191)
-        - locked <0x00000000e0025590> (a java.lang.ref.Reference$Lock)
-        at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:153)
-
-   Locked ownable synchronizers:
-        - None
-
-"VM Thread" os_prio=2 tid=0x0000000014cc9800 nid=0x3c40 runnable
-
-"GC task thread#0 (ParallelGC)" os_prio=0 tid=0x0000000003427800 nid=0x4a34 runnable
-
-"GC task thread#1 (ParallelGC)" os_prio=0 tid=0x0000000003429000 nid=0xe04 runnable
-
-"GC task thread#2 (ParallelGC)" os_prio=0 tid=0x000000000342b000 nid=0xdac runnable
-
-"GC task thread#3 (ParallelGC)" os_prio=0 tid=0x000000000342c800 nid=0x2fcc runnable
-
-"GC task thread#4 (ParallelGC)" os_prio=0 tid=0x000000000342f800 nid=0x3498 runnable
-
-"GC task thread#5 (ParallelGC)" os_prio=0 tid=0x0000000003431000 nid=0x33a0 runnable
-
-"GC task thread#6 (ParallelGC)" os_prio=0 tid=0x0000000003434000 nid=0x1fec runnable
-
-"GC task thread#7 (ParallelGC)" os_prio=0 tid=0x0000000003435000 nid=0x46e0 runnable
-
-"VM Periodic Task Thread" os_prio=2 tid=0x0000000016b7e000 nid=0x2f90 waiting on condition
-
-JNI global references: 930
+分析：
+通过RPS数值的对比，可以发现，对于该应用程序，最佳的堆内存分配空间应该在512m~1024m
+
+// 512m堆内存下启动
+java -jar -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xmx512m -Xms512m gateway-server-0.0.1-SNAPSHOT.jar
+
+2021-11-14T15:00:41.229+0800: [GC (Metadata GC Threshold) [PSYoungGen: 126868K->11475K(153088K)] 126884K->11499K(502784K), 0.0102276 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T15:00:41.239+0800: [Full GC (Metadata GC Threshold) [PSYoungGen: 11475K->0K(153088K)] [ParOldGen: 24K->10842K(349696K)] 11499K->10842K(502784K), [Metaspace: 20516K->20516K(1067008K)], 0.0208501 secs] [Times: user=0.14 sys=0.00, real=0.02 secs]
+2021-11-14T15:00:41.749+0800: [GC (Allocation Failure) [PSYoungGen: 131584K->7254K(153088K)] 142426K->18168K(502784K), 0.0060107 secs] [Times: user=0.13 sys=0.00, real=0.01 secs]
+2021-11-14T15:00:42.722+0800: [GC (Allocation Failure) [PSYoungGen: 138838K->13005K(153088K)] 149752K->23927K(502784K), 0.0081085 secs] [Times: user=0.11 sys=0.02, real=0.01 secs]
+2021-11-14T15:00:43.102+0800: [GC (Metadata GC Threshold) [PSYoungGen: 143838K->15437K(153088K)] 154760K->26367K(502784K), 0.0094445 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T15:00:43.112+0800: [Full GC (Metadata GC Threshold) [PSYoungGen: 15437K->0K(153088K)] [ParOldGen: 10930K->20024K(349696K)] 26367K->20024K(502784K), [Metaspace: 33909K->33909K(1081344K)], 0.0471618 secs] [Times: user=0.28 sys=0.00, real=0.05 secs]
+
+分析：
+512M堆内存的情况下，在启动阶段，就发生了Full GC原因是Metadata GC Threshold
+说明我们的元空间分配的内存少了，接下来我们可以尝试增大元空间可供分配的内存试试
+
+
+// 进行压测时
+sb -u http://localhost:8088/api/hello -c 20 -N 30
+
+2021-11-14T15:06:31.334+0800: [GC (Allocation Failure) [PSYoungGen: 151568K->288K(161280K)] 171688K->23062K(510976K), 0.0039741 secs] [Times: user=0.11 sys=0.02, real=0.01 secs]
+2021-11-14T15:06:32.187+0800: [GC (Allocation Failure) [PSYoungGen: 148768K->256K(161792K)] 171542K->23094K(511488K), 0.0025495 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T15:06:32.990+0800: [GC (Allocation Failure) [PSYoungGen: 149248K->256K(161792K)] 172086K->23158K(511488K), 0.0030013 secs] [Times: user=0.02 sys=0.02, real=0.01 secs]
+2021-11-14T15:06:33.866+0800: [GC (Allocation Failure) [PSYoungGen: 149248K->256K(162816K)] 172150K->23174K(512512K), 0.0022567 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:34.944+0800: [GC (Allocation Failure) [PSYoungGen: 150784K->256K(162304K)] 173702K->23174K(512000K), 0.0023606 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+2021-11-14T15:06:35.751+0800: [GC (Allocation Failure) [PSYoungGen: 150784K->256K(163328K)] 173702K->23182K(513024K), 0.0017800 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:36.597+0800: [GC (Allocation Failure) [PSYoungGen: 151808K->256K(162816K)] 174734K->23182K(512512K), 0.0019993 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:37.420+0800: [GC (Allocation Failure) [PSYoungGen: 151808K->256K(164352K)] 174734K->23190K(514048K), 0.0018179 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:38.304+0800: [GC (Allocation Failure) [PSYoungGen: 153856K->160K(163840K)] 176790K->23094K(513536K), 0.0018747 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:39.138+0800: [GC (Allocation Failure) [PSYoungGen: 153760K->256K(165376K)] 176694K->23190K(515072K), 0.0015388 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:39.969+0800: [GC (Allocation Failure) [PSYoungGen: 155904K->256K(164864K)] 178838K->23190K(514560K), 0.0017154 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:40.782+0800: [GC (Allocation Failure) [PSYoungGen: 155904K->224K(166400K)] 178838K->23158K(516096K), 0.0018886 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:41.635+0800: [GC (Allocation Failure) [PSYoungGen: 157920K->256K(165888K)] 180854K->23206K(515584K), 0.0024002 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:42.857+0800: [GC (Allocation Failure) [PSYoungGen: 157952K->256K(166912K)] 180902K->23206K(516608K), 0.0023450 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:44.181+0800: [GC (Allocation Failure) [PSYoungGen: 159488K->256K(166912K)] 182438K->23238K(516608K), 0.0018416 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:45.358+0800: [GC (Allocation Failure) [PSYoungGen: 159488K->256K(167936K)] 182470K->23302K(517632K), 0.0021851 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T15:06:46.564+0800: [GC (Allocation Failure) [PSYoungGen: 161024K->256K(167424K)] 184070K->23302K(517120K), 0.0022672 secs] [Times: user=0.11 sys=0.00, real=0.01 secs]
+2021-11-14T15:06:47.896+0800: [GC (Allocation Failure) [PSYoungGen: 161024K->256K(168960K)] 184070K->23310K(518656K), 0.0021813 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:49.122+0800: [GC (Allocation Failure) [PSYoungGen: 163072K->256K(168448K)] 186126K->23310K(518144K), 0.0021522 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:50.356+0800: [GC (Allocation Failure) [PSYoungGen: 163072K->256K(169472K)] 186126K->23310K(519168K), 0.0028543 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:51.621+0800: [GC (Allocation Failure) [PSYoungGen: 164096K->256K(168960K)] 187150K->23310K(518656K), 0.0021236 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:53.078+0800: [GC (Allocation Failure) [PSYoungGen: 164096K->256K(169984K)] 187150K->23310K(519680K), 0.0028875 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:54.647+0800: [GC (Allocation Failure) [PSYoungGen: 165632K->256K(169984K)] 188686K->23310K(519680K), 0.0019484 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:55.940+0800: [GC (Allocation Failure) [PSYoungGen: 165632K->256K(170496K)] 188686K->23310K(520192K), 0.0033490 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:57.160+0800: [GC (Allocation Failure) [PSYoungGen: 166656K->256K(170496K)] 189710K->23310K(520192K), 0.0024625 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:58.420+0800: [GC (Allocation Failure) [PSYoungGen: 166656K->256K(171008K)] 189710K->23310K(520704K), 0.0019325 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:06:59.665+0800: [GC (Allocation Failure) [PSYoungGen: 167680K->256K(171008K)] 190734K->23310K(520704K), 0.0025402 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+
+分析：
+在压测的时，我们可以看到，频繁的发生Young GC，但是Young GC减少的数据和我们整个堆内存较少的数据大体一致，说明，我们程序中大多是朝生暮死的对象，
+这样的话，我们可以适当减少老年代分配的空间，减少内存的使用
+
+
+调整后的参数
+通过计算meta区 33909K 大概为 33M, 老年代 23310K - 256K 大概为 23M，年轻代 167680K 大概为 167M 当然，我们的启动参数不能写的那么死，以下是本次启动的jvm参数
+C:\Users\86176\Desktop>java -jar -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xmx210m -Xms210m -Xmn180m -XX:MetaspaceSize=40m gateway-server-0.0.1-SNAPSHOT.jar
+
+-- 启动日志
+2021-11-14T15:39:03.268+0800: [GC (GCLocker Initiated GC) [PSYoungGen: 146594K->11838K(161280K)] 146625K->11876K(192000K), 0.0123936 secs] [Times: user=0.05 sys=0.02, real=0.01 secs]
+2021-11-14T15:39:03.979+0800: [GC (Allocation Failure) [PSYoungGen: 150078K->12838K(161280K)] 150121K->12969K(192000K), 0.0102625 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T15:39:05.196+0800: [GC (Allocation Failure) [PSYoungGen: 151078K->18913K(161280K)] 151209K->19052K(192000K), 0.0150669 secs] [Times: user=0.03 sys=0.00, real=0.01 secs]
+
+-- 压测日志
+sb -u http://localhost:8088/api/hello -c 20 -N 30
+
+2021-11-14T15:46:03.880+0800: [GC (Allocation Failure) [PSYoungGen: 161536K->256K(172544K)] 178994K->17722K(203264K), 0.0019464 secs] [Times: user=0.00 sys=0.03, real=0.01 secs]
+2021-11-14T15:46:04.780+0800: [GC (Allocation Failure) [PSYoungGen: 161536K->224K(174592K)] 179002K->17730K(205312K), 0.0025429 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:05.763+0800: [GC (Allocation Failure) [PSYoungGen: 164576K->256K(174080K)] 182082K->17802K(204800K), 0.0016967 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:07.045+0800: [GC (Allocation Failure) [PSYoungGen: 164608K->256K(175616K)] 182154K->17834K(206336K), 0.0018727 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:07.978+0800: [GC (Allocation Failure) [PSYoungGen: 166656K->256K(175104K)] 184234K->17866K(205824K), 0.0017053 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:08.919+0800: [GC (Allocation Failure) [PSYoungGen: 166648K->256K(177152K)] 184258K->17906K(207872K), 0.0017066 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:09.865+0800: [GC (Allocation Failure) [PSYoungGen: 169728K->256K(176640K)] 187378K->17954K(207360K), 0.0016724 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:10.782+0800: [GC (Allocation Failure) [PSYoungGen: 169728K->256K(177664K)] 187426K->17994K(208384K), 0.0021127 secs] [Times: user=0.06 sys=0.00, real=0.01 secs]
+2021-11-14T15:46:11.742+0800: [GC (Allocation Failure) [PSYoungGen: 171264K->256K(177664K)] 189002K->18042K(208384K), 0.0016833 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:12.695+0800: [GC (Allocation Failure) [PSYoungGen: 171264K->256K(178688K)] 189050K->18074K(209408K), 0.0017342 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:13.634+0800: [GC (Allocation Failure) [PSYoungGen: 172800K->256K(178176K)] 190618K->18106K(208896K), 0.0018383 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:14.690+0800: [GC (Allocation Failure) [PSYoungGen: 172800K->256K(179712K)] 190650K->18146K(210432K), 0.0018808 secs] [Times: user=0.00 sys=0.02, real=0.01 secs]
+2021-11-14T15:46:15.927+0800: [GC (Allocation Failure) [PSYoungGen: 174848K->256K(179200K)] 192738K->18178K(209920K), 0.0022030 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:17.153+0800: [GC (Allocation Failure) [PSYoungGen: 174848K->256K(180224K)] 192770K->18242K(210944K), 0.0020372 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:18.428+0800: [GC (Allocation Failure) [PSYoungGen: 175872K->256K(179712K)] 193858K->18290K(210432K), 0.0020317 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:19.658+0800: [GC (Allocation Failure) [PSYoungGen: 175872K->224K(180736K)] 193906K->18298K(211456K), 0.0027535 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T15:46:20.920+0800: [GC (Allocation Failure) [PSYoungGen: 176864K->224K(180224K)] 194938K->18346K(210944K), 0.0020570 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:22.213+0800: [GC (Allocation Failure) [PSYoungGen: 176864K->256K(181248K)] 194986K->18426K(211968K), 0.0021130 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:23.456+0800: [GC (Allocation Failure) [PSYoungGen: 177920K->256K(180736K)] 196090K->18466K(211456K), 0.0019718 secs] [Times: user=0.11 sys=0.00, real=0.01 secs]
+2021-11-14T15:46:24.725+0800: [GC (Allocation Failure) [PSYoungGen: 177920K->256K(181760K)] 196130K->18482K(212480K), 0.0018864 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:26.015+0800: [GC (Allocation Failure) [PSYoungGen: 178944K->256K(181248K)] 197170K->18506K(211968K), 0.0026354 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:27.292+0800: [GC (Allocation Failure) [PSYoungGen: 178944K->256K(181760K)] 197194K->18562K(212480K), 0.0020682 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T15:46:28.539+0800: [GC (Allocation Failure) [PSYoungGen: 179456K->256K(181760K)] 197762K->18602K(212480K), 0.0020128 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T15:46:29.805+0800: [GC (Allocation Failure) [PSYoungGen: 179456K->256K(182272K)] 197802K->18650K(212992K), 0.0021567 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:31.107+0800: [GC (Allocation Failure) [PSYoungGen: 180480K->256K(182272K)] 198874K->18698K(212992K), 0.0018557 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T15:46:32.412+0800: [GC (Allocation Failure) [PSYoungGen: 180480K->256K(182272K)] 198922K->18738K(212992K), 0.0026218 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+
+-- 性能数据
+PS C:\Users\86176> sb -u http://localhost:8088/api/hello -c 20 -N 30
+Starting at 2021/11/14 15:45:58
+[Press C to stop the test]
+175316  (RPS: 5082.9)
+---------------Finished!----------------
+Finished at 2021/11/14 15:46:33 (took 00:00:34.6706464)
+Status 200:    175316
+
+RPS: 5620.4 (requests/second)
+Max: 117ms
+Min: 0ms
+Avg: 0.1ms
+
+  50%   below 0ms
+  60%   below 0ms
+  70%   below 0ms
+  80%   below 0ms
+  90%   below 0ms
+  95%   below 0ms
+  98%   below 2ms
+  99%   below 3ms
+99.9%   below 8ms
+
+分析：
+可以看到，我们参数调整后，启动日志中不在有Full GC,Young GC也变少了，进行压测时，GC次数基本一致，但是每次的耗时都减少了
+，这主要是因为我们调小了老年代的空间导致的，同时RPS达到了我们这几次测试的最大值，整体来说是一次很成功的参数调整。
