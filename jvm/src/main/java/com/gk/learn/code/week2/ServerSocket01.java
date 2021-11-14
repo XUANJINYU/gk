@@ -8,7 +8,7 @@ import java.net.Socket;
 public class ServerSocket01 {
 
 	public static void main(String[] args) throws IOException {
-		ServerSocket serverSocket = new ServerSocket(9091);
+		ServerSocket serverSocket = new ServerSocket(8801);
 		try {
 			while (true) {
 				// 建立请求连接

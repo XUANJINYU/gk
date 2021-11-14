@@ -1,6 +1,5 @@
 package com.gk.learn.code.week2;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -12,9 +11,7 @@ public class ServerSocket02 {
 		while(true) {
 			try {
 				final Socket socket = serverSocket.accept();
-				new Thread(()->{
-					service(socket);
-				}).start();
+				new Thread(()-> service(socket)).start();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
