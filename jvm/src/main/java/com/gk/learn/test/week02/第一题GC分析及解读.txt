@@ -101,7 +101,7 @@ Heap
 分析：
 与前一次执行结果对比，我们可以看到，在1g的堆内存的情况下，不论Young GC还是Full GC发生的频率都大为下降，
 但是每次GC发生时，垃圾回收的时间都成倍增长了，基本是原来的3倍左右，这是因为我们每次回收的对象要比之前多很多，基本是之前的2~3倍
-同时对比自适应参数下的执行结果，自适应参数下，未发生Full GC，只发生了11次Young GC，我认为，这是因为自适应参数下，jvm自动调小了年轻代的空间，
+同时对比自适应参数下的执行结果，自适应参数下，未发生Full GC，只发生了11次Young GC，这是因为自适应参数下，jvm自动调小了年轻代的空间，
 使的很多年轻代的对象在Young GC时就被回收掉，没有进入老年代，从而使的Full GC没有发生。
 我觉的，在程序不变的前提下，我们可以在自适应参数环境下，使用并行垃圾回收器运行一段时间，然后根据最终稳定运行时的参数，适当的调整我们的Xmx,Xms参数，
 并关闭我们的自适应参数
@@ -224,7 +224,8 @@ Heap
   class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
 
  分析：
- 在512M，CMS垃圾回收机制下，发生了一次完整的垃圾回收，第二次垃圾回收并没有完全执行，我觉得是执行时长的问题导致
+ 在512M，CMS垃圾回收机制下，发生了一次完整的垃圾回收，第二次垃圾回收并没有完全执行，在执行到CMS-concurrent-abortable-preclean-start
+ 阶段就结束了
 
 G1 GC
 -XX:+PrintGC -Xmx1g -Xms1g -XX:+PrintGCDateStamps  -XX:+UseG1GC  -XX:-UseAdaptiveSizePolicy
