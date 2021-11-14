@@ -1,0 +1,348 @@
+运行环境
+Win10系统，4核8G，JDK 1.8.0_241
+
+并行GC 1G 自适应参数
+-XX:+PrintGCDetails -Xmx1g -Xms1g -XX:+PrintGCDateStamps  -XX:+UseParallelGC
+正在执行...
+2021-11-14T12:13:55.927+0800: [GC (Allocation Failure) [PSYoungGen: 262144K->43516K(305664K)] 262144K->82245K(1005056K), 0.0268158 secs] [Times: user=0.06 sys=0.06, real=0.03 secs]
+2021-11-14T12:13:56.028+0800: [GC (Allocation Failure) [PSYoungGen: 305660K->43516K(305664K)] 344389K->155979K(1005056K), 0.0326135 secs] [Times: user=0.09 sys=0.13, real=0.03 secs]
+2021-11-14T12:13:56.121+0800: [GC (Allocation Failure) [PSYoungGen: 305572K->43502K(305664K)] 418036K->231455K(1005056K), 0.0369966 secs] [Times: user=0.06 sys=0.14, real=0.04 secs]
+2021-11-14T12:13:56.225+0800: [GC (Allocation Failure) [PSYoungGen: 305460K->43512K(305664K)] 493413K->304984K(1005056K), 0.0292827 secs] [Times: user=0.16 sys=0.09, real=0.03 secs]
+2021-11-14T12:13:56.310+0800: [GC (Allocation Failure) [PSYoungGen: 305656K->43507K(305664K)] 567128K->376753K(1005056K), 0.0279761 secs] [Times: user=0.00 sys=0.13, real=0.03 secs]
+2021-11-14T12:13:56.402+0800: [GC (Allocation Failure) [PSYoungGen: 305651K->43512K(160256K)] 638897K->450594K(859648K), 0.0433403 secs] [Times: user=0.06 sys=0.13, real=0.04 secs]
+2021-11-14T12:13:56.466+0800: [GC (Allocation Failure) [PSYoungGen: 160248K->69273K(232960K)] 567330K->482785K(932352K), 0.0162504 secs] [Times: user=0.13 sys=0.00, real=0.02 secs]
+2021-11-14T12:13:56.508+0800: [GC (Allocation Failure) [PSYoungGen: 186009K->91659K(232960K)] 599521K->514754K(932352K), 0.0245055 secs] [Times: user=0.00 sys=0.01, real=0.02 secs]
+2021-11-14T12:13:56.552+0800: [GC (Allocation Failure) [PSYoungGen: 208227K->102243K(232960K)] 631322K->542877K(932352K), 0.0352891 secs] [Times: user=0.19 sys=0.02, real=0.04 secs]
+2021-11-14T12:13:56.612+0800: [GC (Allocation Failure) [PSYoungGen: 218949K->70713K(232960K)] 659582K->570575K(932352K), 0.0398437 secs] [Times: user=0.17 sys=0.06, real=0.04 secs]
+2021-11-14T12:13:56.676+0800: [GC (Allocation Failure) [PSYoungGen: 187224K->44253K(232960K)] 687085K->607747K(932352K), 0.0357765 secs] [Times: user=0.14 sys=0.09, real=0.04 secs]
+执行结束!共生成对象次数:8104
+Heap
+ PSYoungGen      total 232960K, used 49239K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 116736K, 4% used [0x00000000eab00000,0x00000000eafde780,0x00000000f1d00000)
+  from space 116224K, 38% used [0x00000000f1d00000,0x00000000f48374b0,0x00000000f8e80000)
+  to   space 116224K, 0% used [0x00000000f8e80000,0x00000000f8e80000,0x0000000100000000)
+ ParOldGen       total 699392K, used 563494K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 80% used [0x00000000c0000000,0x00000000e2649938,0x00000000eab00000)
+ Metaspace       used 3320K, capacity 4500K, committed 4864K, reserved 1056768K
+  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
+
+分析：
+在本次的执行过程中，发生了多次YoungGC，每次GC的原因都是Allocation Failure，并没有出现FullGC。
+日志中记录了每次GC时，年轻代以及堆内存使用的变化，我们可以看到，年轻代使用空间的减少值和堆内存的较少值并不相同，
+这是因为有些年轻代的对象经过gc后晋升到了老年代，我们可以通过计算堆和年轻代内存减少的差值，得到这次gc晋升到老年
+代的对象所占用的内存。同时，我们可以根据上次gc后年轻代和老年的初始数值，和下次GC前年轻代和老年的数值，以及两次
+gc之间的时间间隔，计算出分配速率（年轻代）和晋升速率（老年代），来分析系统的健康情况。
+此外，在jdk1.8下，由于参数自适应的问题，我们可以看到，堆内存以及年轻代分配的空间在每次gc时并不一致。
+以下测试，关闭了jdk1.8自适应参数。
+
+并行GC 512M
+-XX:+PrintGCDetails -Xmx512m -Xms512m -XX:+PrintGCDateStamps  -XX:+UseParallelGC  -XX:-UseAdaptiveSizePolicy
+正在执行...
+2021-11-14T12:25:33.848+0800: [GC (Allocation Failure) [PSYoungGen: 131584K->21501K(153088K)] 131584K->40964K(502784K), 0.0129246 secs] [Times: user=0.03 sys=0.06, real=0.01 secs]
+2021-11-14T12:25:33.894+0800: [GC (Allocation Failure) [PSYoungGen: 153085K->21494K(153088K)] 172548K->89916K(502784K), 0.0224468 secs] [Times: user=0.05 sys=0.16, real=0.02 secs]
+2021-11-14T12:25:33.943+0800: [GC (Allocation Failure) [PSYoungGen: 153078K->21500K(153088K)] 221500K->129653K(502784K), 0.0200370 secs] [Times: user=0.03 sys=0.06, real=0.02 secs]
+2021-11-14T12:25:33.993+0800: [GC (Allocation Failure) [PSYoungGen: 153084K->21491K(153088K)] 261237K->171280K(502784K), 0.0151347 secs] [Times: user=0.01 sys=0.00, real=0.01 secs]
+2021-11-14T12:25:34.040+0800: [GC (Allocation Failure) [PSYoungGen: 153075K->21495K(153088K)] 302864K->214956K(502784K), 0.0160358 secs] [Times: user=0.06 sys=0.01, real=0.02 secs]
+2021-11-14T12:25:34.083+0800: [GC (Allocation Failure) [PSYoungGen: 153079K->21502K(153088K)] 346540K->252508K(502784K), 0.0146101 secs] [Times: user=0.17 sys=0.03, real=0.02 secs]
+2021-11-14T12:25:34.140+0800: [GC (Allocation Failure) [PSYoungGen: 153086K->21500K(153088K)] 384092K->297227K(502784K), 0.0202319 secs] [Times: user=0.06 sys=0.03, real=0.02 secs]
+2021-11-14T12:25:34.195+0800: [GC (Allocation Failure) [PSYoungGen: 153084K->21498K(153088K)] 428811K->340758K(502784K), 0.0206816 secs] [Times: user=0.00 sys=0.02, real=0.02 secs]
+2021-11-14T12:25:34.216+0800: [Full GC (Ergonomics) [PSYoungGen: 21498K->0K(153088K)] [ParOldGen: 319259K->246827K(349696K)] 340758K->246827K(502784K), [Metaspace: 3313K->3313K(1056768K)], 0.0608261 secs] [Times: user=0.34 sys=0.00, real=0.06 secs]
+2021-11-14T12:25:34.304+0800: [GC (Allocation Failure) [PSYoungGen: 131584K->21497K(153088K)] 378411K->292881K(502784K), 0.0096207 secs] [Times: user=0.13 sys=0.00, real=0.01 secs]
+2021-11-14T12:25:34.347+0800: [GC (Allocation Failure) [PSYoungGen: 153081K->21503K(153088K)] 424465K->333836K(502784K), 0.0133879 secs] [Times: user=0.11 sys=0.00, real=0.02 secs]
+2021-11-14T12:25:34.363+0800: [Full GC (Ergonomics) [PSYoungGen: 21503K->0K(153088K)] [ParOldGen: 312332K->278105K(349696K)] 333836K->278105K(502784K), [Metaspace: 3314K->3314K(1056768K)], 0.0612679 secs] [Times: user=0.42 sys=0.00, real=0.06 secs]
+2021-11-14T12:25:34.455+0800: [GC (Allocation Failure) [PSYoungGen: 131584K->21501K(153088K)] 409689K->328183K(502784K), 0.0106018 secs] [Times: user=0.02 sys=0.00, real=0.01 secs]
+2021-11-14T12:25:34.465+0800: [Full GC (Ergonomics) [PSYoungGen: 21501K->0K(153088K)] [ParOldGen: 306681K->293541K(349696K)] 328183K->293541K(502784K), [Metaspace: 3314K->3314K(1056768K)], 0.0621760 secs] [Times: user=0.39 sys=0.01, real=0.06 secs]
+2021-11-14T12:25:34.557+0800: [GC (Allocation Failure) [PSYoungGen: 131281K->21501K(153088K)] 424822K->334491K(502784K), 0.0091889 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
+2021-11-14T12:25:34.566+0800: [Full GC (Ergonomics) [PSYoungGen: 21501K->0K(153088K)] [ParOldGen: 312989K->297413K(349696K)] 334491K->297413K(502784K), [Metaspace: 3314K->3314K(1056768K)], 0.0647066 secs] [Times: user=0.30 sys=0.02, real=0.07 secs]
+2021-11-14T12:25:34.664+0800: [Full GC (Ergonomics) [PSYoungGen: 131584K->0K(153088K)] [ParOldGen: 297413K->304541K(349696K)] 428997K->304541K(502784K), [Metaspace: 3314K->3314K(1056768K)], 0.0702511 secs] [Times: user=0.34 sys=0.00, real=0.07 secs]
+执行结束!共生成对象次数:6446
+Heap
+ PSYoungGen      total 153088K, used 5294K [0x00000000f5580000, 0x0000000100000000, 0x0000000100000000)
+  eden space 131584K, 4% used [0x00000000f5580000,0x00000000f5aaba18,0x00000000fd600000)
+  from space 21504K, 0% used [0x00000000feb00000,0x00000000feb00000,0x0000000100000000)
+  to   space 21504K, 0% used [0x00000000fd600000,0x00000000fd600000,0x00000000feb00000)
+ ParOldGen       total 349696K, used 304541K [0x00000000e0000000, 0x00000000f5580000, 0x00000000f5580000)
+  object space 349696K, 87% used [0x00000000e0000000,0x00000000f2967618,0x00000000f5580000)
+ Metaspace       used 3320K, capacity 4500K, committed 4864K, reserved 1056768K
+  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
+
+分析：
+在512m堆内存的情况下，我们可以看到，发生了5次Full GC以及12次Young GC
+前期，Young GC发生的比较多，后期Young GC与Full GC发生的比例接近1/2，
+这是因为堆内存分配的空间比较小，年轻代很快被填满，在经过gc后很快进入老年代，同时老年代分配的空间也很小，老年代被很快填满，就频繁的发生了多次Full GC
+我们知道，默认情况下年轻代和老年代的比例为1:2，同时我们的程序在年轻代和老年代随机分配的比例大概是1:1，所以后期出现Young GC与Full GC发生的比例接近1/2
+应该是个正常的现象。
+同时，我们可以看到程序运行结束时，老年代空间使用率已经有87%，预估如果继续执行，很快会发生下次Full GC。
+
+并行GC 1G
+-XX:+PrintGCDetails -Xmx1g -Xms1g -XX:+PrintGCDateStamps  -XX:+UseParallelGC  -XX:-UseAdaptiveSizePolicy
+正在执行...
+2021-11-14T12:24:14.635+0800: [GC (Allocation Failure) [PSYoungGen: 262144K->43518K(305664K)] 262144K->83313K(1005056K), 0.0304552 secs] [Times: user=0.08 sys=0.08, real=0.04 secs]
+2021-11-14T12:24:14.728+0800: [GC (Allocation Failure) [PSYoungGen: 305662K->43517K(305664K)] 345457K->155077K(1005056K), 0.0284341 secs] [Times: user=0.06 sys=0.08, real=0.03 secs]
+2021-11-14T12:24:14.813+0800: [GC (Allocation Failure) [PSYoungGen: 305661K->43518K(305664K)] 417221K->229355K(1005056K), 0.0281151 secs] [Times: user=0.20 sys=0.02, real=0.03 secs]
+2021-11-14T12:24:14.904+0800: [GC (Allocation Failure) [PSYoungGen: 305662K->43509K(305664K)] 491499K->301411K(1005056K), 0.0281778 secs] [Times: user=0.13 sys=0.00, real=0.03 secs]
+2021-11-14T12:24:14.996+0800: [GC (Allocation Failure) [PSYoungGen: 305653K->43515K(305664K)] 563555K->373216K(1005056K), 0.0267498 secs] [Times: user=0.02 sys=0.09, real=0.03 secs]
+2021-11-14T12:24:15.071+0800: [GC (Allocation Failure) [PSYoungGen: 305659K->43515K(305664K)] 635360K->451950K(1005056K), 0.0303643 secs] [Times: user=0.09 sys=0.09, real=0.03 secs]
+2021-11-14T12:24:15.155+0800: [GC (Allocation Failure) [PSYoungGen: 305659K->43516K(305664K)] 714094K->523672K(1005056K), 0.0257189 secs] [Times: user=0.09 sys=0.11, real=0.03 secs]
+2021-11-14T12:24:15.231+0800: [GC (Allocation Failure) [PSYoungGen: 305660K->43512K(305664K)] 785816K->594974K(1005056K), 0.0458680 secs] [Times: user=0.09 sys=0.19, real=0.05 secs]
+2021-11-14T12:24:15.333+0800: [GC (Allocation Failure) [PSYoungGen: 305656K->43511K(305664K)] 857118K->666410K(1005056K), 0.0409240 secs] [Times: user=0.06 sys=0.09, real=0.04 secs]
+2021-11-14T12:24:15.376+0800: [Full GC (Ergonomics) [PSYoungGen: 43511K->0K(305664K)] [ParOldGen: 622899K->330042K(699392K)] 666410K->330042K(1005056K), [Metaspace: 3313K->3313K(1056768K)], 0.0861310 secs] [Times: user=0.34 sys=0.05, real=0.09 secs]
+执行结束!共生成对象次数:8938
+Heap
+ PSYoungGen      total 305664K, used 16421K [0x00000000eab00000, 0x0000000100000000, 0x0000000100000000)
+  eden space 262144K, 6% used [0x00000000eab00000,0x00000000ebb09770,0x00000000fab00000)
+  from space 43520K, 0% used [0x00000000fab00000,0x00000000fab00000,0x00000000fd580000)
+  to   space 43520K, 0% used [0x00000000fd580000,0x00000000fd580000,0x0000000100000000)
+ ParOldGen       total 699392K, used 330042K [0x00000000c0000000, 0x00000000eab00000, 0x00000000eab00000)
+  object space 699392K, 47% used [0x00000000c0000000,0x00000000d424eac0,0x00000000eab00000)
+ Metaspace       used 3319K, capacity 4500K, committed 4864K, reserved 1056768K
+  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
+
+分析：
+与前一次执行结果对比，我们可以看到，在1g的堆内存的情况下，不论Young GC还是Full GC发生的频率都大为下降，
+但是每次GC发生时，垃圾回收的时间都成倍增长了，基本是原来的3倍左右，这是因为我们每次回收的对象要比之前多很多，基本是之前的2~3倍
+同时对比自适应参数下的执行结果，自适应参数下，未发生Full GC，只发生了11次Young GC，我认为，这是因为自适应参数下，jvm自动调小了年轻代的空间，
+使的很多年轻代的对象在Young GC时就被回收掉，没有进入老年代，从而使的Full GC没有发生。
+我觉的，在程序不变的前提下，我们可以在自适应参数环境下，使用并行垃圾回收器运行一段时间，然后根据最终稳定运行时的参数，适当的调整我们的Xmx,Xms参数，
+并关闭我们的自适应参数
+
+
+串行GC
+-XX:+PrintGCDetails -Xmx1g -Xms1g -XX:+PrintGCDateStamps  -XX:+UseSerialGC  -XX:-UseAdaptiveSizePolicy
+正在执行...
+2021-11-14T12:28:11.283+0800: [GC (Allocation Failure) 2021-11-14T12:28:11.283+0800: [DefNew: 279461K->34944K(314560K), 0.0787751 secs] 279461K->94132K(1013632K), 0.0788681 secs] [Times: user=0.03 sys=0.06, real=0.09 secs]
+2021-11-14T12:28:11.433+0800: [GC (Allocation Failure) 2021-11-14T12:28:11.433+0800: [DefNew: 314560K->34943K(314560K), 0.0964738 secs] 373748K->172586K(1013632K), 0.0965235 secs] [Times: user=0.03 sys=0.06, real=0.10 secs]
+2021-11-14T12:28:11.587+0800: [GC (Allocation Failure) 2021-11-14T12:28:11.587+0800: [DefNew: 314559K->34943K(314560K), 0.0789773 secs] 452202K->256545K(1013632K), 0.0790218 secs] [Times: user=0.05 sys=0.01, real=0.08 secs]
+2021-11-14T12:28:11.747+0800: [GC (Allocation Failure) 2021-11-14T12:28:11.747+0800: [DefNew: 314559K->34944K(314560K), 0.0708628 secs] 536161K->332602K(1013632K), 0.0709493 secs] [Times: user=0.05 sys=0.02, real=0.07 secs]
+2021-11-14T12:28:11.873+0800: [GC (Allocation Failure) 2021-11-14T12:28:11.873+0800: [DefNew: 314560K->34943K(314560K), 0.0769857 secs] 612218K->407189K(1013632K), 0.0770259 secs] [Times: user=0.00 sys=0.08, real=0.07 secs]
+2021-11-14T12:28:12.020+0800: [GC (Allocation Failure) 2021-11-14T12:28:12.020+0800: [DefNew: 314559K->34943K(314560K), 0.0723987 secs] 686805K->490083K(1013632K), 0.0724438 secs] [Times: user=0.03 sys=0.05, real=0.07 secs]
+执行结束!共生成对象次数:6363
+Heap
+ def new generation   total 314560K, used 46843K [0x00000000c0000000, 0x00000000d5550000, 0x00000000d5550000)
+  eden space 279616K,   4% used [0x00000000c0000000, 0x00000000c0b9efc8, 0x00000000d1110000)
+  from space 34944K,  99% used [0x00000000d1110000, 0x00000000d332ffd8, 0x00000000d3330000)
+  to   space 34944K,   0% used [0x00000000d3330000, 0x00000000d3330000, 0x00000000d5550000)
+ tenured generation   total 699072K, used 455139K [0x00000000d5550000, 0x0000000100000000, 0x0000000100000000)
+   the space 699072K,  65% used [0x00000000d5550000, 0x00000000f11c8ee0, 0x00000000f11c9000, 0x0000000100000000)
+ Metaspace       used 3319K, capacity 4500K, committed 4864K, reserved 1056768K
+  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
+
+ 分析：
+ 对比并行环境下，我们可以看到，Young GC次数变少，没有Full GC发生，但是每次垃圾回收的耗时大为增长，基本是之前的3倍以上
+ 这是因为串行回收时只有一个线程执行垃圾回收。没有Full GC，这是因为相同执行时间下，产生的对象比较少（因为相比上次，有更多的时间消耗在了垃圾回收过程中），
+ 这表明，当前执行环境下该程序吞吐量要小很多。
+
+-XX:+PrintGCDetails -Xmx1g -Xms1g -XX:+PrintGCDateStamps  -XX:+UseConcMarkSweepGC  -XX:-UseAdaptiveSizePolicy
+正在执行...
+2021-11-14T12:31:55.989+0800: [GC (Allocation Failure) 2021-11-14T12:31:55.989+0800: [ParNew: 279616K->34944K(314560K), 0.0253915 secs] 279616K->85445K(1013632K), 0.0254878 secs] [Times: user=0.05 sys=0.05, real=0.03 secs]
+2021-11-14T12:31:56.074+0800: [GC (Allocation Failure) 2021-11-14T12:31:56.074+0800: [ParNew: 314560K->34944K(314560K), 0.0357835 secs] 365061K->167734K(1013632K), 0.0358345 secs] [Times: user=0.06 sys=0.14, real=0.04 secs]
+2021-11-14T12:31:56.175+0800: [GC (Allocation Failure) 2021-11-14T12:31:56.175+0800: [ParNew: 314560K->34944K(314560K), 0.0759505 secs] 447350K->244350K(1013632K), 0.0760040 secs] [Times: user=0.42 sys=0.06, real=0.08 secs]
+2021-11-14T12:31:56.310+0800: [GC (Allocation Failure) 2021-11-14T12:31:56.310+0800: [ParNew: 314560K->34943K(314560K), 0.0725461 secs] 523966K->321795K(1013632K), 0.0725950 secs] [Times: user=0.33 sys=0.08, real=0.07 secs]
+2021-11-14T12:31:56.432+0800: [GC (Allocation Failure) 2021-11-14T12:31:56.432+0800: [ParNew: 314559K->34939K(314560K), 0.0691355 secs] 601411K->393668K(1013632K), 0.0691789 secs] [Times: user=0.39 sys=0.03, real=0.07 secs]
+2021-11-14T12:31:56.505+0800: [GC (CMS Initial Mark) [1 CMS-initial-mark: 358728K(699072K)] 399697K(1013632K), 0.0003790 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:31:56.505+0800: [CMS-concurrent-mark-start]
+2021-11-14T12:31:56.509+0800: [CMS-concurrent-mark: 0.005/0.005 secs] [Times: user=0.05 sys=0.00, real=0.00 secs]
+2021-11-14T12:31:56.509+0800: [CMS-concurrent-preclean-start]
+2021-11-14T12:31:56.509+0800: [CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:31:56.509+0800: [CMS-concurrent-abortable-preclean-start]
+2021-11-14T12:31:56.564+0800: [GC (Allocation Failure) 2021-11-14T12:31:56.564+0800: [ParNew2021-11-14T12:31:56.614+0800: [CMS-concurrent-abortable-preclean: 0.001/0.103 secs] [Times: user=0.33 sys=0.03, real=0.11 secs]
+: 314555K->34944K(314560K), 0.0787473 secs] 673284K->471844K(1013632K), 0.0787963 secs] [Times: user=0.45 sys=0.05, real=0.08 secs]
+2021-11-14T12:31:56.644+0800: [GC (CMS Final Remark) [YG occupancy: 35121 K (314560 K)]2021-11-14T12:31:56.644+0800: [Rescan (parallel) , 0.0006803 secs]2021-11-14T12:31:56.645+0800: [weak refs processing, 0.0000257 secs]2021-11-14T12:31:56.645+0800: [class unloading, 0.0003583 secs]2021-11-14T12:31:56.645+0800: [scrub symbol table, 0.0005833 secs]2021-11-14T12:31:56.646+0800: [scrub string table, 0.0001323 secs][1 CMS-remark: 436900K(699072K)] 472021K(1013632K), 0.0018638 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:31:56.646+0800: [CMS-concurrent-sweep-start]
+2021-11-14T12:31:56.647+0800: [CMS-concurrent-sweep: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:31:56.647+0800: [CMS-concurrent-reset-start]
+2021-11-14T12:31:56.652+0800: [CMS-concurrent-reset: 0.005/0.005 secs] [Times: user=0.03 sys=0.00, real=0.00 secs]
+2021-11-14T12:31:56.692+0800: [GC (Allocation Failure) 2021-11-14T12:31:56.692+0800: [ParNew: 314560K->34940K(314560K), 0.0250437 secs] 624185K->422820K(1013632K), 0.0250902 secs] [Times: user=0.20 sys=0.00, real=0.03 secs]
+执行结束!共生成对象次数:7520
+Heap
+ par new generation   total 314560K, used 84440K [0x00000000c0000000, 0x00000000d5550000, 0x00000000d5550000)
+  eden space 279616K,  17% used [0x00000000c0000000, 0x00000000c3057038, 0x00000000d1110000)
+  from space 34944K,  99% used [0x00000000d3330000, 0x00000000d554f268, 0x00000000d5550000)
+  to   space 34944K,   0% used [0x00000000d1110000, 0x00000000d1110000, 0x00000000d3330000)
+ concurrent mark-sweep generation total 699072K, used 387880K [0x00000000d5550000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 3320K, capacity 4500K, committed 4864K, reserved 1056768K
+  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
+
+分析：
+在此次执行中，YoungGC和之前的并没有很大的差别，差别主要在CMS垃圾回收执行阶段
+CMS垃圾回收机制主要包含着几个阶段：
+阶段1：Initial Mark 初始标记
+阶段2：Concurrent Mark 并发标记
+阶段3：Concurrent PreClean 并发预清理
+阶段4：Final Remark 最终标记
+阶段5：Concurrent Sweep 并发清理
+阶段6：Concurrent Reset 并发重置
+我们可以看到，在并发预清理阶段还执行了一次YoungGC
+
+
+-XX:+PrintGCDetails -Xmx512m -Xms512m -XX:+PrintGCDateStamps  -XX:+UseConcMarkSweepGC  -XX:-UseAdaptiveSizePolicy
+正在执行...
+2021-11-14T12:36:34.238+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.238+0800: [ParNew: 139776K->17472K(157248K), 0.0159636 secs] 139776K->48570K(506816K), 0.0161005 secs] [Times: user=0.08 sys=0.03, real=0.02 secs]
+2021-11-14T12:36:34.307+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.307+0800: [ParNew: 157248K->17472K(157248K), 0.0237400 secs] 188346K->90260K(506816K), 0.0238181 secs] [Times: user=0.03 sys=0.03, real=0.02 secs]
+2021-11-14T12:36:34.372+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.372+0800: [ParNew: 156802K->17472K(157248K), 0.0431121 secs] 229591K->134798K(506816K), 0.0431607 secs] [Times: user=0.28 sys=0.02, real=0.04 secs]
+2021-11-14T12:36:34.450+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.451+0800: [ParNew: 157248K->17471K(157248K), 0.0400940 secs] 274574K->177223K(506816K), 0.0401666 secs] [Times: user=0.14 sys=0.03, real=0.04 secs]
+2021-11-14T12:36:34.531+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.531+0800: [ParNew: 157019K->17471K(157248K), 0.0532535 secs] 316771K->227396K(506816K), 0.0533351 secs] [Times: user=0.25 sys=0.05, real=0.06 secs]
+2021-11-14T12:36:34.586+0800: [GC (CMS Initial Mark) [1 CMS-initial-mark: 209924K(349568K)] 227790K(506816K), 0.0005499 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.587+0800: [CMS-concurrent-mark-start]
+2021-11-14T12:36:34.588+0800: [CMS-concurrent-mark: 0.004/0.004 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.591+0800: [CMS-concurrent-preclean-start]
+2021-11-14T12:36:34.591+0800: [CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.591+0800: [CMS-concurrent-abortable-preclean-start]
+2021-11-14T12:36:34.621+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.621+0800: [ParNew: 157247K->17470K(157248K), 0.0425992 secs] 367172K->273199K(506816K), 0.0426473 secs] [Times: user=0.16 sys=0.02, real=0.04 secs]
+2021-11-14T12:36:34.692+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.692+0800: [ParNew: 157246K->17470K(157248K), 0.0468074 secs] 412975K->322368K(506816K), 0.0468541 secs] [Times: user=0.33 sys=0.00, real=0.05 secs]
+2021-11-14T12:36:34.771+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.773+0800: [ParNew: 157246K->157246K(157248K), 0.0000648 secs]2021-11-14T12:36:34.773+0800: [CMS2021-11-14T12:36:34.773+0800: [CMS-concurrent-abortable-preclean: 0.004/0.182 secs] [Times: user=0.56 sys=0.03, real=0.18 secs]
+ (concurrent mode failure): 304897K->258024K(349568K), 0.0709016 secs] 462144K->258024K(506816K), [Metaspace: 3313K->3313K(1056768K)], 0.0710646 secs] [Times: user=0.05 sys=0.01, real=0.07 secs]
+2021-11-14T12:36:34.876+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.876+0800: [ParNew: 139776K->17469K(157248K), 0.0129227 secs] 397800K->303897K(506816K), 0.0129676 secs] [Times: user=0.08 sys=0.00, real=0.01 secs]
+2021-11-14T12:36:34.888+0800: [GC (CMS Initial Mark) [1 CMS-initial-mark: 286427K(349568K)] 307512K(506816K), 0.0007463 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.889+0800: [CMS-concurrent-mark-start]
+2021-11-14T12:36:34.891+0800: [CMS-concurrent-mark: 0.002/0.002 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.892+0800: [CMS-concurrent-preclean-start]
+2021-11-14T12:36:34.892+0800: [CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.892+0800: [CMS-concurrent-abortable-preclean-start]
+2021-11-14T12:36:34.917+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.917+0800: [ParNew: 157109K->17471K(157248K), 0.0327820 secs] 443537K->353522K(506816K), 0.0328456 secs] [Times: user=0.17 sys=0.03, real=0.03 secs]
+2021-11-14T12:36:34.950+0800: [CMS-concurrent-abortable-preclean: 0.001/0.057 secs] [Times: user=0.17 sys=0.03, real=0.06 secs]
+2021-11-14T12:36:34.950+0800: [GC (CMS Final Remark) [YG occupancy: 20449 K (157248 K)]2021-11-14T12:36:34.950+0800: [Rescan (parallel) , 0.0007011 secs]2021-11-14T12:36:34.951+0800: [weak refs processing, 0.0000171 secs]2021-11-14T12:36:34.951+0800: [class unloading, 0.0002959 secs]2021-11-14T12:36:34.951+0800: [scrub symbol table, 0.0004565 secs]2021-11-14T12:36:34.952+0800: [scrub string table, 0.0001348 secs][1 CMS-remark: 336051K(349568K)] 356500K(506816K), 0.0016924 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.952+0800: [CMS-concurrent-sweep-start]
+2021-11-14T12:36:34.953+0800: [CMS-concurrent-sweep: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.953+0800: [CMS-concurrent-reset-start]
+2021-11-14T12:36:34.953+0800: [CMS-concurrent-reset: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:34.986+0800: [GC (Allocation Failure) 2021-11-14T12:36:34.986+0800: [ParNew: 157247K->157247K(157248K), 0.0000320 secs]2021-11-14T12:36:34.986+0800: [CMS: 310005K->296890K(349568K), 0.0720159 secs] 467253K->296890K(506816K), [Metaspace: 3314K->3314K(1056768K)], 0.0721268 secs] [Times: user=0.06 sys=0.00, real=0.07 secs]
+2021-11-14T12:36:35.059+0800: [GC (CMS Initial Mark) [1 CMS-initial-mark: 296890K(349568K)] 300017K(506816K), 0.0006798 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:35.059+0800: [CMS-concurrent-mark-start]
+2021-11-14T12:36:35.064+0800: [CMS-concurrent-mark: 0.004/0.004 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:35.064+0800: [CMS-concurrent-preclean-start]
+2021-11-14T12:36:35.065+0800: [CMS-concurrent-preclean: 0.001/0.001 secs] [Times: user=0.00 sys=0.00, real=0.00 secs]
+2021-11-14T12:36:35.065+0800: [CMS-concurrent-abortable-preclean-start]
+执行结束!共生成对象次数:6153
+Heap
+ par new generation   total 157248K, used 109690K [0x00000000e0000000, 0x00000000eaaa0000, 0x00000000eaaa0000)
+  eden space 139776K,  78% used [0x00000000e0000000, 0x00000000e6b1e970, 0x00000000e8880000)
+  from space 17472K,   0% used [0x00000000e9990000, 0x00000000e9990000, 0x00000000eaaa0000)
+  to   space 17472K,   0% used [0x00000000e8880000, 0x00000000e8880000, 0x00000000e9990000)
+ concurrent mark-sweep generation total 349568K, used 296890K [0x00000000eaaa0000, 0x0000000100000000, 0x0000000100000000)
+ Metaspace       used 3320K, capacity 4500K, committed 4864K, reserved 1056768K
+  class space    used 360K, capacity 388K, committed 512K, reserved 1048576K
+
+ 分析：
+ 在512M，CMS垃圾回收机制下，发生了一次完整的垃圾回收，第二次垃圾回收并没有完全执行，我觉得是执行时长的问题导致
+
+G1 GC
+-XX:+PrintGC -Xmx1g -Xms1g -XX:+PrintGCDateStamps  -XX:+UseG1GC  -XX:-UseAdaptiveSizePolicy
+正在执行...
+2021-11-14T12:40:44.256+0800: [GC pause (G1 Evacuation Pause) (young) 59M->20M(1024M), 0.0080918 secs]
+2021-11-14T12:40:44.293+0800: [GC pause (G1 Evacuation Pause) (young) 79M->40M(1024M), 0.0070264 secs]
+2021-11-14T12:40:44.327+0800: [GC pause (G1 Evacuation Pause) (young) 94M->56M(1024M), 0.0069986 secs]
+2021-11-14T12:40:44.377+0800: [GC pause (G1 Evacuation Pause) (young) 143M->88M(1024M), 0.0089686 secs]
+2021-11-14T12:40:44.422+0800: [GC pause (G1 Evacuation Pause) (young) 186M->121M(1024M), 0.0116434 secs]
+2021-11-14T12:40:44.531+0800: [GC pause (G1 Evacuation Pause) (young) 295M->164M(1024M), 0.0169900 secs]
+2021-11-14T12:40:44.594+0800: [GC pause (G1 Evacuation Pause) (young) 323M->213M(1024M), 0.0140524 secs]
+2021-11-14T12:40:44.736+0800: [GC pause (G1 Evacuation Pause) (young) 486M->290M(1024M), 0.0234308 secs]
+2021-11-14T12:40:44.823+0800: [GC pause (G1 Evacuation Pause) (young) 538M->350M(1024M), 0.0230803 secs]
+2021-11-14T12:40:44.917+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 597M->405M(1024M), 0.0182780 secs]
+2021-11-14T12:40:44.935+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:40:44.935+0800: [GC concurrent-root-region-scan-end, 0.0003469 secs]
+2021-11-14T12:40:44.935+0800: [GC concurrent-mark-start]
+2021-11-14T12:40:44.940+0800: [GC concurrent-mark-end, 0.0041929 secs]
+2021-11-14T12:40:44.940+0800: [GC remark, 0.0030700 secs]
+2021-11-14T12:40:44.944+0800: [GC cleanup 422M->410M(1024M), 0.0015247 secs]
+2021-11-14T12:40:44.945+0800: [GC concurrent-cleanup-start]
+2021-11-14T12:40:44.945+0800: [GC concurrent-cleanup-end, 0.0000382 secs]
+2021-11-14T12:40:45.158+0800: [GC pause (G1 Evacuation Pause) (young) 796M->466M(1024M), 0.0396493 secs]
+执行结束!共生成对象次数:6842
+
+分析：
+G1 GC作为CMS垃圾回收机制的进阶版，我们可以看到，很多垃圾回收的过程和CMS垃圾回收机制很类似
+暂停的次数很多，但是，时长都特别短，所以我认为，对于对于系统响应耗时有要求，但对吞吐量没有特别要求的系统，可以采用G1 GC垃圾回收机制。
+
+
+-XX:+PrintGC -Xmx512m -Xms512m -XX:+PrintGCDateStamps  -XX:+UseG1GC  -XX:-UseAdaptiveSizePolicy
+正在执行...
+2021-11-14T12:41:37.584+0800: [GC pause (G1 Evacuation Pause) (young) 30M->10M(512M), 0.0045698 secs]
+2021-11-14T12:41:37.607+0800: [GC pause (G1 Evacuation Pause) (young) 46M->25M(512M), 0.0047738 secs]
+2021-11-14T12:41:37.639+0800: [GC pause (G1 Evacuation Pause) (young) 77M->41M(512M), 0.0066728 secs]
+2021-11-14T12:41:37.941+0800: [GC pause (G1 Evacuation Pause) (young)-- 414M->288M(512M), 0.0182462 secs]
+2021-11-14T12:41:37.960+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 288M->288M(512M), 0.0089136 secs]
+2021-11-14T12:41:37.968+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:41:37.969+0800: [GC concurrent-root-region-scan-end, 0.0001153 secs]
+2021-11-14T12:41:37.969+0800: [GC concurrent-mark-start]
+2021-11-14T12:41:37.972+0800: [GC concurrent-mark-end, 0.0033343 secs]
+2021-11-14T12:41:37.972+0800: [GC remark, 0.0034836 secs]
+2021-11-14T12:41:37.977+0800: [GC cleanup 299M->299M(512M), 0.0018989 secs]
+2021-11-14T12:41:38.019+0800: [GC pause (G1 Evacuation Pause) (young) 418M->330M(512M), 0.0077528 secs]
+2021-11-14T12:41:38.031+0800: [GC pause (G1 Evacuation Pause) (mixed) 346M->285M(512M), 0.0060669 secs]
+2021-11-14T12:41:38.043+0800: [GC pause (G1 Evacuation Pause) (mixed) 311M->248M(512M), 0.0046116 secs]
+2021-11-14T12:41:38.053+0800: [GC pause (G1 Evacuation Pause) (mixed) 276M->222M(512M), 0.0074384 secs]
+2021-11-14T12:41:38.062+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 222M->221M(512M), 0.0024240 secs]
+2021-11-14T12:41:38.064+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:41:38.064+0800: [GC concurrent-root-region-scan-end, 0.0002248 secs]
+2021-11-14T12:41:38.064+0800: [GC concurrent-mark-start]
+2021-11-14T12:41:38.066+0800: [GC concurrent-mark-end, 0.0033327 secs]
+2021-11-14T12:41:38.068+0800: [GC remark, 0.0027622 secs]
+2021-11-14T12:41:38.071+0800: [GC cleanup 235M->235M(512M), 0.0017019 secs]
+2021-11-14T12:41:38.118+0800: [GC pause (G1 Evacuation Pause) (young)-- 421M->332M(512M), 0.0101043 secs]
+2021-11-14T12:41:38.130+0800: [GC pause (G1 Evacuation Pause) (mixed) 338M->311M(512M), 0.0079825 secs]
+2021-11-14T12:41:38.140+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 315M->310M(512M), 0.0027080 secs]
+2021-11-14T12:41:38.143+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:41:38.143+0800: [GC concurrent-root-region-scan-end, 0.0002063 secs]
+2021-11-14T12:41:38.143+0800: [GC concurrent-mark-start]
+2021-11-14T12:41:38.145+0800: [GC concurrent-mark-end, 0.0023010 secs]
+2021-11-14T12:41:38.146+0800: [GC remark, 0.0026320 secs]
+2021-11-14T12:41:38.148+0800: [GC cleanup 320M->319M(512M), 0.0028492 secs]
+2021-11-14T12:41:38.151+0800: [GC concurrent-cleanup-start]
+2021-11-14T12:41:38.151+0800: [GC concurrent-cleanup-end, 0.0000218 secs]
+2021-11-14T12:41:38.178+0800: [GC pause (G1 Evacuation Pause) (young) 421M->346M(512M), 0.0080483 secs]
+2021-11-14T12:41:38.189+0800: [GC pause (G1 Evacuation Pause) (mixed) 363M->302M(512M), 0.0068678 secs]
+2021-11-14T12:41:38.200+0800: [GC pause (G1 Evacuation Pause) (mixed) 328M->277M(512M), 0.0076030 secs]
+2021-11-14T12:41:38.217+0800: [GC pause (G1 Evacuation Pause) (mixed) 304M->279M(512M), 0.0051456 secs]
+2021-11-14T12:41:38.223+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 283M->280M(512M), 0.0046192 secs]
+2021-11-14T12:41:38.227+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:41:38.228+0800: [GC concurrent-root-region-scan-end, 0.0002717 secs]
+2021-11-14T12:41:38.228+0800: [GC concurrent-mark-start]
+2021-11-14T12:41:38.231+0800: [GC concurrent-mark-end, 0.0032585 secs]
+2021-11-14T12:41:38.232+0800: [GC remark, 0.0033030 secs]
+2021-11-14T12:41:38.235+0800: [GC cleanup 295M->295M(512M), 0.0025437 secs]
+2021-11-14T12:41:38.269+0800: [GC pause (G1 Evacuation Pause) (young) 418M->318M(512M), 0.0098997 secs]
+2021-11-14T12:41:38.283+0800: [GC pause (G1 Evacuation Pause) (mixed) 333M->295M(512M), 0.0107955 secs]
+2021-11-14T12:41:38.301+0800: [GC pause (G1 Evacuation Pause) (mixed) 321M->299M(512M), 0.0049785 secs]
+2021-11-14T12:41:38.307+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 301M->299M(512M), 0.0038228 secs]
+2021-11-14T12:41:38.311+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:41:38.311+0800: [GC concurrent-root-region-scan-end, 0.0002499 secs]
+2021-11-14T12:41:38.311+0800: [GC concurrent-mark-start]
+2021-11-14T12:41:38.315+0800: [GC concurrent-mark-end, 0.0038906 secs]
+2021-11-14T12:41:38.316+0800: [GC remark, 0.0033807 secs]
+2021-11-14T12:41:38.319+0800: [GC cleanup 317M->317M(512M), 0.0026325 secs]
+2021-11-14T12:41:38.347+0800: [GC pause (G1 Evacuation Pause) (young) 414M->326M(512M), 0.0091107 secs]
+2021-11-14T12:41:38.367+0800: [GC pause (G1 Evacuation Pause) (mixed) 340M->304M(512M), 0.0098571 secs]
+2021-11-14T12:41:38.383+0800: [GC pause (G1 Evacuation Pause) (mixed) 331M->309M(512M), 0.0057533 secs]
+2021-11-14T12:41:38.389+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 310M->310M(512M), 0.0035103 secs]
+2021-11-14T12:41:38.393+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:41:38.393+0800: [GC concurrent-root-region-scan-end, 0.0003403 secs]
+2021-11-14T12:41:38.393+0800: [GC concurrent-mark-start]
+2021-11-14T12:41:38.396+0800: [GC concurrent-mark-end, 0.0030545 secs]
+2021-11-14T12:41:38.397+0800: [GC remark, 0.0035466 secs]
+2021-11-14T12:41:38.400+0800: [GC cleanup 322M->322M(512M), 0.0023592 secs]
+2021-11-14T12:41:38.426+0800: [GC pause (G1 Evacuation Pause) (young) 413M->339M(512M), 0.0092211 secs]
+2021-11-14T12:41:38.439+0800: [GC pause (G1 Evacuation Pause) (mixed) 358M->319M(512M), 0.0115578 secs]
+2021-11-14T12:41:38.451+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 319M->320M(512M), 0.0033931 secs]
+2021-11-14T12:41:38.455+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:41:38.455+0800: [GC concurrent-root-region-scan-end, 0.0002132 secs]
+2021-11-14T12:41:38.455+0800: [GC concurrent-mark-start]
+2021-11-14T12:41:38.457+0800: [GC concurrent-mark-end, 0.0026851 secs]
+2021-11-14T12:41:38.458+0800: [GC remark, 0.0037822 secs]
+2021-11-14T12:41:38.462+0800: [GC cleanup 334M->333M(512M), 0.0027379 secs]
+2021-11-14T12:41:38.465+0800: [GC concurrent-cleanup-start]
+2021-11-14T12:41:38.465+0800: [GC concurrent-cleanup-end, 0.0000528 secs]
+2021-11-14T12:41:38.482+0800: [GC pause (G1 Evacuation Pause) (young) 401M->340M(512M), 0.0084318 secs]
+2021-11-14T12:41:38.496+0800: [GC pause (G1 Evacuation Pause) (mixed) 358M->323M(512M), 0.0092840 secs]
+2021-11-14T12:41:38.506+0800: [GC pause (G1 Humongous Allocation) (young) (initial-mark) 324M->323M(512M), 0.0028675 secs]
+2021-11-14T12:41:38.509+0800: [GC concurrent-root-region-scan-start]
+2021-11-14T12:41:38.510+0800: [GC concurrent-root-region-scan-end, 0.0003706 secs]
+2021-11-14T12:41:38.510+0800: [GC concurrent-mark-start]
+2021-11-14T12:41:38.513+0800: [GC concurrent-mark-end, 0.0032428 secs]
+2021-11-14T12:41:38.513+0800: [GC remark, 0.0033041 secs]
+2021-11-14T12:41:38.517+0800: [GC cleanup 341M->341M(512M), 0.0026082 secs]
+执行结束!共生成对象次数:6341
+
+分析：
+512m环境下，我们可以看到，G1 GC与上次执行有所不同，出现了很多上次没有出现的垃圾回收阶段，如：(G1 Evacuation Pause) (mixed)，
+我们在使用G1 GC时，要防止G1 GC退化为Serial GC
