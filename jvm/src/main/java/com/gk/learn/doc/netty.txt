@@ -1,0 +1,6 @@
+ByteToMessageDecoder提供的一些常见的实现类
+1.FixedLengthFrameDecoder:定长协议解码器，我们可以指定固定的字节数算一个完整的报文
+2.LineBasedFrameDecoder:行分隔符解码器，遇到\n或者\r\n，则认为是一个完整的报文
+3.DelimiterBasedFrameDecoder:分隔符解码器，分隔符可以自己指定
+4.LengthFieldBasedFrameDecoder:长度编码解码器，将报文划分为报文头/报文体
+5.JsonObjectDecoder:json格式解码器，当检测到匹配数量的{、}或[]时，则认为是一个完整的json对象或者json数组
