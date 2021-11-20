@@ -4,6 +4,7 @@ import com.gk.learn.code.week03.filter.HeaderHttpResponseFilter;
 import com.gk.learn.code.week03.filter.HttpResponseFilter;
 import com.gk.learn.code.week03.router.HttpEndpointRouter;
 import com.gk.learn.code.week03.router.RandomHttpEndpointRouter;
+import com.gk.learn.code.week03.router.WeightRouter;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -11,10 +12,13 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.apache.tomcat.util.codec.binary.StringUtils;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.*;
@@ -33,6 +37,7 @@ public class HttpOutboundHandler {
 
     HttpResponseFilter filter = new HeaderHttpResponseFilter();
     HttpEndpointRouter router = new RandomHttpEndpointRouter();
+    WeightRouter weightRouter = new WeightRouter();
 
     public HttpOutboundHandler(List<String> backends) {
 
@@ -54,7 +59,13 @@ public class HttpOutboundHandler {
     }
     
     public void handle(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx) {
-        String backendUrl = router.route(this.backendUrls);
+    	// 随机路由
+//        String backendUrl = router.route(this.backendUrls);
+        // 读取配置文件权重路由 异常时选择随机路由
+		String backendUrl = weightRouter.route(this.backendUrls);
+		if (StringUtil.isNullOrEmpty(backendUrl)) {
+			backendUrl = router.route(this.backendUrls);
+		}
         final String url = backendUrl + fullRequest.uri();
         proxyService.submit(()->fetchGet(fullRequest, ctx, url));
     }
@@ -63,6 +74,7 @@ public class HttpOutboundHandler {
 		Request.Builder builder = new Request.Builder();
 		Request request = builder.url(url).get().build();
 		try {
+			System.out.println(request.headers());
 			Response response = okHttpClient.newCall(request).execute();
 			handleResponse(inbound, ctx, response);
 		} catch (IOException e) {

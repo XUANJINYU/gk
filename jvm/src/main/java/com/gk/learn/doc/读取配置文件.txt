@@ -1,0 +1,12 @@
+InputStream in = NettyServerApplication.class.getClassLoader().getResource("application.properties").openStream();
+Properties properties = new Properties();
+properties.load(in);
+String value = properties.getProperty("server.weight");
+System.out.println(value);
+
+
+@Component
+@PropertySource(value = {"classpath:application.properties"})
+@Setter
+@Getter
+list读取 @Value("#{'${server.weight}'.split(',')}")
