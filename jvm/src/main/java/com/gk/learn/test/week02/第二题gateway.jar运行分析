@@ -1,6 +1,6 @@
 
 -- 512m堆内存下启动
-C:\Users\86176\Desktop>java -jar -Xmx512m -Xms512m gateway-server-0.0.1-SNAPSHOT.jar
+C:\Users\86176\Desktop>java -jar -Xmx512m -Xms512m com.gk.learn.code.week03-server-0.0.1-SNAPSHOT.jar
 
 PS C:\WINDOWS\system32> sb -u http://localhost:8088/api/hello -c 20 -N 60
 Starting at 2021/11/13 16:08:15
@@ -25,7 +25,7 @@ Avg: 0.2ms
   99%   below 4ms
 99.9%   below 10ms
 
-java -jar -Xmx256m -Xms256m gateway-server-0.0.1-SNAPSHOT.jar
+java -jar -Xmx256m -Xms256m com.gk.learn.code.week03-server-0.0.1-SNAPSHOT.jar
 
 PS C:\WINDOWS\system32> sb -u http://localhost:8088/api/hello -c 20 -N 60
 Starting at 2021/11/13 16:11:02
@@ -50,7 +50,7 @@ Avg: 0.2ms
   99%   below 5ms
 99.9%   below 14ms
 
-java -jar -Xmx1024m -Xms1024m gateway-server-0.0.1-SNAPSHOT.jar
+java -jar -Xmx1024m -Xms1024m com.gk.learn.code.week03-server-0.0.1-SNAPSHOT.jar
 
 PS C:\WINDOWS\system32> sb -u http://localhost:8088/api/hello -c 20 -N 60
 Starting at 2021/11/13 16:13:33
@@ -79,7 +79,7 @@ Avg: 0.3ms
 通过RPS数值的对比，可以发现，对于该应用程序，最佳的堆内存分配空间应该在512m~1024m
 
 // 512m堆内存下启动
-java -jar -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xmx512m -Xms512m gateway-server-0.0.1-SNAPSHOT.jar
+java -jar -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xmx512m -Xms512m com.gk.learn.code.week03-server-0.0.1-SNAPSHOT.jar
 
 2021-11-14T15:00:41.229+0800: [GC (Metadata GC Threshold) [PSYoungGen: 126868K->11475K(153088K)] 126884K->11499K(502784K), 0.0102276 secs] [Times: user=0.00 sys=0.00, real=0.01 secs]
 2021-11-14T15:00:41.239+0800: [Full GC (Metadata GC Threshold) [PSYoungGen: 11475K->0K(153088K)] [ParOldGen: 24K->10842K(349696K)] 11499K->10842K(502784K), [Metaspace: 20516K->20516K(1067008K)], 0.0208501 secs] [Times: user=0.14 sys=0.00, real=0.02 secs]
@@ -131,7 +131,7 @@ sb -u http://localhost:8088/api/hello -c 20 -N 30
 
 调整后的参数
 通过计算meta区 33909K 大概为 33M, 老年代 23310K - 256K 大概为 23M，年轻代 167680K 大概为 167M 当然，我们的启动参数不能写的那么死，以下是本次启动的jvm参数
-C:\Users\86176\Desktop>java -jar -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xmx210m -Xms210m -Xmn180m -XX:MetaspaceSize=40m gateway-server-0.0.1-SNAPSHOT.jar
+C:\Users\86176\Desktop>java -jar -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xmx210m -Xms210m -Xmn180m -XX:MetaspaceSize=40m com.gk.learn.code.week03-server-0.0.1-SNAPSHOT.jar
 
 -- 启动日志
 2021-11-14T15:39:03.268+0800: [GC (GCLocker Initiated GC) [PSYoungGen: 146594K->11838K(161280K)] 146625K->11876K(192000K), 0.0123936 secs] [Times: user=0.05 sys=0.02, real=0.01 secs]
