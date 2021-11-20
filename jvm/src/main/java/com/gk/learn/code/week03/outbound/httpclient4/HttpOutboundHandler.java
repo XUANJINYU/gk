@@ -50,7 +50,7 @@ public class HttpOutboundHandler {
         proxyService = new ThreadPoolExecutor(cores, cores,
                 keepAliveTime, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(queueSize),
                 new NamedThreadFactory("proxyService"), handler);
-        
+
         okHttpClient = new OkHttpClient();
     }
 
@@ -64,6 +64,7 @@ public class HttpOutboundHandler {
         // 读取配置文件权重路由 异常时选择随机路由
 		String backendUrl = weightRouter.route(this.backendUrls);
 		if (StringUtil.isNullOrEmpty(backendUrl)) {
+			log.error("切换到随机路由算法");
 			backendUrl = router.route(this.backendUrls);
 		}
         final String url = backendUrl + fullRequest.uri();
@@ -74,7 +75,7 @@ public class HttpOutboundHandler {
 		Request.Builder builder = new Request.Builder();
 		Request request = builder.url(url).get().build();
 		try {
-			System.out.println(request.headers());
+			log.info("url:{}, randomo:{}", url.replace("favicon.ico", ""), inbound.headers().get("random"));
 			Response response = okHttpClient.newCall(request).execute();
 			handleResponse(inbound, ctx, response);
 		} catch (IOException e) {
