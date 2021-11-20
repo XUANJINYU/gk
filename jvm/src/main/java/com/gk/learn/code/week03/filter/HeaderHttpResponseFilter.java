@@ -6,8 +6,10 @@ import io.netty.handler.codec.http.FullHttpResponse;
  * @author 86176
  */
 public class HeaderHttpResponseFilter implements HttpResponseFilter {
+
     @Override
-    public void filter(FullHttpResponse response) {
-        response.headers().set("kk", "java-1-nio");
+    public boolean filter(FullHttpResponse response) {
+        String random = response.headers().get("random");
+        return Integer.parseInt(random) % 2 != 0;
     }
 }
