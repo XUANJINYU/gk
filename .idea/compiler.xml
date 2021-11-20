@@ -8,11 +8,17 @@
         <outputRelativeToContentRoot value="true" />
         <module name="demo" />
         <module name="jvm" />
+        <module name="netty-gateway" />
+        <module name="nio01" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="demo" target="1.8" />
       <module name="jvm" target="1.8" />
+      <module name="netty-gateway" target="1.8" />
+      <module name="nio01" target="8" />
+      <module name="nio01 (1)" target="1.5" />
+      <module name="nio01 (2)" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

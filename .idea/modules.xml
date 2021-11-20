@@ -5,6 +5,8 @@
       <module fileurl="file://$PROJECT_DIR$/jvm/demo.iml" filepath="$PROJECT_DIR$/jvm/demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/gk.iml" filepath="$PROJECT_DIR$/.idea/gk.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm/jvm.iml" filepath="$PROJECT_DIR$/jvm/jvm.iml" />
+      <module fileurl="file://E:/JavaCourseCodes/02nio/nio02/netty-gateway.iml" filepath="E:/JavaCourseCodes/02nio/nio02/netty-gateway.iml" />
+      <module fileurl="file://E:/JavaCourseCodes/02nio/nio01/nio01.iml" filepath="E:/JavaCourseCodes/02nio/nio01/nio01.iml" />
     </modules>
   </component>
 </project>
