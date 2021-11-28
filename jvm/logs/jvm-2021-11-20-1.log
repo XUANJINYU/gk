@@ -1,0 +1,49 @@
+2021-11-20 22:14:31.311 [nioEventLoopGroup-3-3] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:14:35.848 [nioEventLoopGroup-3-4] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:14:42.791 [nioEventLoopGroup-3-6] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:14:53.574 [nioEventLoopGroup-3-9] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:14:53.599 [nioEventLoopGroup-3-9] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:14:54.807 [nioEventLoopGroup-3-9] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:15:00.185 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:15:00.207 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:15:52.301 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:16:09.529 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:2
+2021-11-20 22:16:09.535 [proxyService-thread-1] ERROR [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.handleResponse(HttpOutboundHandler.java:95)] - response---random----2
+2021-11-20 22:16:09.625 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:18:46.696 [nioEventLoopGroup-3-2] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:18:46.715 [nioEventLoopGroup-3-2] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:18:47.526 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url: http://127.0.0.1:8802/, randomo:2
+2021-11-20 22:18:47.529 [proxyService-thread-1] ERROR [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.handleResponse(HttpOutboundHandler.java:95)] - response---random----2
+2021-11-20 22:18:47.550 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url: http://127.0.0.1:8802/, randomo:2
+2021-11-20 22:18:47.554 [proxyService-thread-1] ERROR [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.handleResponse(HttpOutboundHandler.java:95)] - response---random----2
+2021-11-20 22:18:48.176 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:18:59.421 [nioEventLoopGroup-3-6] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:18:59.522 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:2
+2021-11-20 22:19:04.712 [proxyService-thread-1] ERROR [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.handleResponse(HttpOutboundHandler.java:95)] - response---random----2
+2021-11-20 22:19:12.786 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:19:12.808 [nioEventLoopGroup-3-8] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:14.120 [proxyService-thread-2] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:2
+2021-11-20 22:19:14.126 [proxyService-thread-2] ERROR [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.handleResponse(HttpOutboundHandler.java:95)] - response---random----2
+2021-11-20 22:19:14.147 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:19:15.016 [proxyService-thread-2] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url: http://127.0.0.1:8802/, randomo:1
+2021-11-20 22:19:15.040 [proxyService-thread-3] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:19:15.766 [proxyService-thread-4] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url: http://127.0.0.1:8802/, randomo:1
+2021-11-20 22:19:15.789 [proxyService-thread-5] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:2
+2021-11-20 22:19:15.792 [proxyService-thread-5] ERROR [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.handleResponse(HttpOutboundHandler.java:95)] - response---random----2
+2021-11-20 22:19:16.522 [nioEventLoopGroup-3-10] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:16.541 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:19:17.215 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url: http://127.0.0.1:8802/, randomo:1
+2021-11-20 22:19:17.239 [proxyService-thread-2] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url: http://127.0.0.1:8802/, randomo:1
+2021-11-20 22:19:17.913 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:17.931 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:18.568 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:18.589 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:19.198 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:19.219 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:19.921 [proxyService-thread-3] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:19:19.947 [proxyService-thread-4] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:1
+2021-11-20 22:19:20.270 [nioEventLoopGroup-3-12] ERROR [com.gk.learn.code.week03.inbound.HttpInboundHandler.channelRead(HttpInboundHandler.java:47)] - request---random----0
+2021-11-20 22:19:20.292 [proxyService-thread-5] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url: http://127.0.0.1:8802/, randomo:1
+2021-11-20 22:19:21.130 [proxyService-thread-6] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url:http://127.0.0.1:8801/, randomo:2
+2021-11-20 22:19:21.132 [proxyService-thread-6] ERROR [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.handleResponse(HttpOutboundHandler.java:95)] - response---random----2
+2021-11-20 22:19:21.152 [proxyService-thread-1] INFO  [com.gk.learn.code.week03.outbound.httpclient4.HttpOutboundHandler.fetchGet(HttpOutboundHandler.java:78)] - url: http://127.0.0.1:8802/, randomo:1

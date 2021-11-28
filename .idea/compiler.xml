@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="0301" />
         <module name="demo" />
         <module name="jvm" />
         <module name="netty-gateway" />
@@ -13,6 +14,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="0301" target="8" />
       <module name="demo" target="1.8" />
       <module name="jvm" target="1.8" />
       <module name="netty-gateway" target="1.8" />
