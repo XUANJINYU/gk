@@ -1,5 +1,7 @@
 package com.gk.learn.code.week04;
 
+import lombok.SneakyThrows;
+
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 
@@ -10,6 +12,7 @@ public class SemaphoreTest {
 	public static void main(String[] args) throws Exception {
 		Semaphore semaphore = new Semaphore(0);
 		new Thread(new MyRunnable(semaphore)).start();
+		// 子线程的创建执行需要时间，在这个过程中主线程需要被阻塞，直到子线程执行完毕  Semaphore(0) 时，acquire会阻塞线程的执行
 		semaphore.acquire();
 		System.out.println("res：" + res);
 	}
